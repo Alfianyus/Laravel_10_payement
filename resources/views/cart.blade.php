@@ -15,7 +15,7 @@
         @php $total = 0 @endphp
         @if(session('cart'))
         @foreach(session('cart') as $id=>$details)
-        @php $total += $$details['price'] * $$details['quantity'] @endphp
+        @php $total += (float)$details['price'] * $details['quantity'] @endphp
         <tr data-id="{{$id}}">
             <td data-th="Product">
                 <div class="row">
@@ -30,7 +30,7 @@
                 <input type="number" value="{{$details['quantity']}}" class="form-control quantity cart_update" min="1" />
 
             </td>
-            <td data-th="Subtotal" class="text-center">${{$details['price']*$$details['quantity']}}</td>
+            <td data-th="Subtotal" class="text-center">${{(float)$details['price']*$details['quantity']}}</td>
             <td class="actions" data-th="">
                 <button class="btn btn-danger btn-sm cart_remove"><i class="fa fa-trash-o">Delete</button>
             </td>
@@ -54,4 +54,27 @@
         </tr>
     </tfoot>
 </table>
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+    $(".cart_remove").click(function(e) {
+        e.preventDefault();
+
+        var ele = $(this);
+        if (confirm("Do You really want to remove")) {
+            $.ajax({
+                url: '',
+                method: "DELETE",
+                data: {
+                    _token: '{{csrf_token()}}',
+                    id: ele.parents("tr").attr("data-id")
+                },
+                success: function(response) {
+                    window.location.relod();
+                }
+            });
+        }
+    });
+</script>
 @endsection
