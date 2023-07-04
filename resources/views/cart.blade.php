@@ -47,9 +47,11 @@
         </tr>
         <tr>
             <td colspan="5" style="text-align:right;">
-                <a href="{{url('/')}}" class="btn btn-danger"><i class="fa fa-arrow-left"></i>Continue Shopping</a>
-                <button class="btn btn-success" type="submit" id="checkout-live-button"><i class="fa fa-money"></i>Checkout</button>
-
+                <form action="/session" method="POST">
+                    <a href="{{url('/')}}" class="btn btn-danger"><i class="fa fa-arrow-left"></i>Continue Shopping</a>
+                    <input type="hidden" name="_token" value="{{csrf_token}}">
+                    <button class="btn btn-success" type="submit" id="checkout-live-button"><i class="fa fa-money"></i>Checkout</button>
+                </form>
             </td>
         </tr>
     </tfoot>
@@ -58,6 +60,24 @@
 
 @section('scripts')
 <script type="text/javascript">
+    $(".cart_update").change(function(e) {
+        e.preventDefault();
+
+        var ele = $(this);
+        $.ajax({
+            url: '',
+            method: "patch",
+            data: {
+                _token: '{{csrf_token()}}',
+                id: ele.parents("tr").attr("data-id"),
+                quantity: ele.parents("tr").find(".quantity").val()
+            },
+            success: function(response) {
+                window.location.reload();
+            }
+        });
+    });
+
     $(".cart_remove").click(function(e) {
         e.preventDefault();
 
